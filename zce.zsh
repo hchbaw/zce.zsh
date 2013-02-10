@@ -196,9 +196,13 @@ with-zce () {
   zmodload zsh/terminfo 2>/dev/null
   setopt localoptions extendedglob braceccl
   local orig_buffer="$BUFFER"
+  local -i orig_cursor; ((orig_cursor=CURSOR))
+  ((CURSOR=$#BUFFER)); zle -R
   local -a region_highlight
   {
-    "$@" ${(j..)$(print {a-z} {A-Z})}
+    "$@" ${(j..)$(print {a-z} {A-Z})} || {
+      ((CURSOR=orig_cursor))
+    }
   } always {
     BUFFER="$orig_buffer"
     zle redisplay
@@ -210,7 +214,6 @@ zce-searchin-read () {
 }
 
 zce-raw () {
-  ((CURSOR=$#BUFFER))
   local c=; "$1" c
   [[ "$c" == [[:print:]] ]] && {
     zce-1 "$c" "$BUFFER" zce-2 "$2"
