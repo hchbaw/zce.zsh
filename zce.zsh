@@ -105,6 +105,7 @@ zce-2-raw () {
 
   local -i n=1
   local null=$'\0'
+  local MATCH MBEGIN MEND
   ${keyinfun} '' "$b" "${b//(#m)${c}/${ks[i--][1]}}" \
     "${movecfun}" "${keyinfun}" "${kreadfun}" \
     -- ${(s. .)${:-"${oks//(#m)$'\t'/$null$ps[((n++))] }$null$ps[n]"}}
