@@ -23,6 +23,20 @@ z y x w v u t s r q p o n m l k j i h g f e d c b a>tmp2 && cmp tmp tmp2'
   }
 }
 
+test-zce-1-fail () {
+  {
+    local failcalledp=nil
+    zce-fail () { failcalledp=t }
+    K () {}
+    zce-1 "a" "BB" K "ab"
+    local r=$?
+    is '(($r != 0))'
+    is '[[ $failcalledp == t ]]'
+  } always {
+    . ../zce.zsh
+  }
+}
+
 test-zce-2-raw () {
   () {
     local tbuffer= tcalledp=
@@ -68,4 +82,4 @@ test-keyin-loop () {
   }
 }
 
-test-run test-zce-genh-loop test-zce-2-raw test-keyin-loop
+test-run test-zce-genh-loop test-zce-1-fail test-zce-2-raw test-keyin-loop

@@ -67,7 +67,9 @@ zce-1 () {
   local null=$'\0' ok='ok '
 
   ps=(${${(M)${(0)${(S)b//*(#b)(${c})/${ok}$mbegin[1]${null}}}:#${ok}*}#${ok}})
-  if (($#ps > $#keys)); then
+  if (($#ps == 0)); then
+    zce-fail; return -1
+  elif (($#ps > $#keys)); then
     zce-genh-loop "$kont" ${(j. .)ps} $c $b zce-genh-loop-key "$keys" \
       $(($#ps - $#keys + 1)) $#keys '' ' ' $#keys
   else
