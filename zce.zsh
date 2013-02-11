@@ -136,17 +136,16 @@ zce-readc () {
 }
 
 zce-keyin-read () {
-  zce-readc "$1" '%{\e[1;32m%}Target key:%{\e[0m%} '
+  local s=; zstyle -s ':zce:*' prompt-key s || \
+    s='%{\e[1;32m%}Target key:%{\e[0m%} '
+  zce-readc "$1" "$s"
 }
 
 zce-keyin-loop () {
   local -a region_highlight
-  zce-keyin-loop-raw \
-    'fg=196,bold' 'fg=black,bold' \
-    "$@"
-#  zce-keyin-loop-raw \
-#    'fg=white,bold' 'fg=black,bold' \
-#    "$@"
+  local fg=; zstyle -s ':zce:*' fg fg || fg='fg=196,bold'
+  local bg=; zstyle -s ':zce:*' bg bg || bg='fg=black,bold'
+  zce-keyin-loop-raw "$fg" "$bg" "$@"
 }
 
 zce-keyin-loop-raw () {
@@ -210,7 +209,9 @@ with-zce () {
 }
 
 zce-searchin-read () {
-  zce-readc "$1" '%{\e[1;32m%}Search for character:%{\e[0m%} '
+  local s=; zstyle -s ':zce:*' prompt-char s || \
+    s='%{\e[1;32m%}Search for character:%{\e[0m%} '
+  zce-readc "$1" "$s"
 }
 
 zce-raw () {
