@@ -35,6 +35,19 @@ test-zce-1-fail () {
   } always {
     . ../zce.zsh
   }
+  {
+    return
+    # FIXME
+    local failcalledp=nil
+    zce-fail () { failcalledp=t }
+    K () {}
+    #3
+    zce-1 "a" $'\e\e'" 1" K "ab"
+    is '(($r != 0))'
+    is '[[ $failcalledp == t ]]'
+  } always {
+    . ../zce.zsh
+  }
 }
 
 test-zce-2-raw () {

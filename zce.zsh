@@ -64,9 +64,9 @@ zce-1 () {
   [[ "$c" == [[:print:]] ]] || return -1
   local -a ps
   local -a match mbegin mend
-  local null=$'\0' ok='ok '
+  local null=$'\0' ok=$'\e\e ' okp=$'\e\e [[:digit:]]##(#e)'
 
-  ps=(${${(M)${(0)${(S)b//*(#b)(${c})/${ok}$mbegin[1]${null}}}:#${ok}*}#${ok}})
+  ps=(${${(M)${(0)${(S)b//*(#b)(${c})/${ok}$mbegin[1]${null}}}:#${~okp}}#${ok}})
   if (($#ps == 0)); then
     zce-fail; return -1
   elif (($#ps > $#keys)); then
