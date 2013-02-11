@@ -65,6 +65,7 @@ zce-1 () {
   local -a ps
   local -a match mbegin mend
   local null=$'\0' ok='ok '
+
   ps=(${${(M)${(0)${(S)b//*(#b)(${c})/${ok}$mbegin[1]${null}}}:#${ok}*}#${ok}})
   if (($#ps > $#keys)); then
     zce-genh-loop "$kont" ${(j. .)ps} $c $b zce-genh-loop-key "$keys" \
@@ -96,11 +97,9 @@ zce-2-raw () {
   local -i i; ((i=$#ps))
 
   if (($i==0)); then
-    zce-fail
-    return $?
+    zce-fail; return $?
   elif (($i==1)); then
-    $movecfun $ps[1]
-    return $?
+    $movecfun $ps[1]; return $?
   fi
 
   local -i n=1
@@ -162,11 +161,9 @@ zce-keyin-loop-raw () {
 
   local -i c=0; ((c=$#@))
   if ((c == 0)); then
-    zce-fail
-    return -1
+    zce-fail; return -1
   elif ((c == 1)); then
-    zce-move-cursor ${1#*$'\0'}
-    return 0
+    zce-move-cursor ${1#*$'\0'}; return 0
   fi
 
   local MATCH MBEGIN MEND
