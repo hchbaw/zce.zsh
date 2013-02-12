@@ -181,7 +181,7 @@ zce-keyin-loop-raw () {
     region_highlight=("0 $#BUFFER $dimspec")
     region_highlight+=(${${${(M)@:#${key}*}#*$'\0'}/(#m)[[:digit:]]##/$((MATCH-1)) $MATCH $hispec})
   fi
-  zle -Rc
+  zle -R
 
   local key2=; ${kreadfun} key2 && \
     ${0} $hispec $dimspec "${key}${key2}" "$ob" "$nb" \
