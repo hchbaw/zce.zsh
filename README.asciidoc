@@ -1,0 +1,79 @@
+vim's EasyMotion / Emacs's ace-jump-mode for zsh. 
+-------------------------------------------------
+Author: Takeshi Banse <takebi@laafc.net>
+
+License: BSD-3
+
+Thank you very much, Kim Silkebækken and winterTTr! I want to use the EasyMotion/ace-jump-mode in zsh.
+
+
+////
+////
+image::https://github.com/hchbaw/zce.zsh/raw/readme/zce.zsh.gif[zsh.zsh demo]
+
+Install
+-------
+
+Please source it and bind the function to your favorite key.
+
+----
+% . zce.zsh
+% bindkey "^Xz" zce
+----
+
+Styles
+------
+
+`:zce:* keys`:: Keys to be used for target characters. +
+(default: the result of `setopt braceccl; ${(j..)$(print {a-z} {A-Z})}`)
+
+`:zce:* fg`:: A highlight sepc for target characters. +
+(default: `'fg=196,bold'`)
+
+`:zce:* bg`:: A highlight spec for BUFFER during zce is in effect. +
+(default: `'fg=black,bold'`)
+
+`:zce:* prompt-char`:: A prompt string for querying the searching character. +
+(default: `'%{\e[1;32m%}Search for character:%{\e[0m%} '`)
+
+`:zce:* prompt-key`:: A prompt string for querying the target character. +
+(default: `'%{\e[1;32m%}Target key:%{\e[0m%} '`)
+
+customization example
+~~~~~~~~~~~~~~~~~~~~~
+
+[source,zsh]
+----
+() {
+  setopt localoptions braceccl
+  zstyle ':zce:*' keys ${(j..)$(print {a-z})}
+}
+zstyle ':zce:*' fg 'fg=white,bold'
+zstyle ':zce:*' bg 'fg=7'
+zstyle ':zce:*' prompt-char '%{\e[1;32m%}Character:%{\e[0m%} '
+zstyle ':zce:*' prompt-key '%{\e[1;32m%}Key:%{\e[0m%} '
+----
+
+Notes
+-----
+
+Optionally you can use the zcompiled file with the autoloading for a little faster loading on every shell start up, if you zcompile the necessary functions.
+zcompile `zce.zsh` to `~/.zsh/zfunc/zce`:
+
+----
+% Z=~/c/experiment/zsh/zce.zsh/zce.zsh; ($SHELL -c ". $Z && zce-zcompile $Z ~/.zsh/zfunc")
+** zcompiling zce in ~/.zsh/zfunc for a little faster startups...
++ mkdir -p ~/.zsh/zfunc
+* writing code ~/.zsh/zfunc/zce
+* re-compiling ~/.zsh/zfunc/zce.zwc: succeeded
+** All done.
+** Please update your .zshrc to load the zcompiled file like this,
+-- >8 --
+## zce.zsh stuff.
+# source ~/c/experiment/zsh/zce.zsh/zce.zsh
+autaload -w ~/.zsh/zfunc/zce; zle -N zce
+# bindkey "^Xz" zce
+-- 8< --
+----
+
+Please copy and paste the contents between `-- >8 --` and `-- 8< --`  into your `~/.zshrc`
