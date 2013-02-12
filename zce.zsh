@@ -224,3 +224,51 @@ zce-raw () {
 zce () { with-zce zce-raw zce-searchin-read }
 
 zle -N zce
+
+# zcompiling code.
+
+zce-zcompile-clean () {
+  local d=${1:-~/.zsh/zfunc}
+  rm -f ${d}/zce{,zwc*(N)}
+}
+
+zce-zcompile () {
+  local s=${1:?Please specify the source file itself.}
+  local d=${2:?Please specify the directory for the zcompiled file.}
+  setopt localoptions extendedglob no_shwordsplit
+
+  echo "** zcompiling zce in ${d} for a little faster startups..."
+  echo "mkdir -p ${d}" | sh -x
+  zce-zcompile-clean
+
+  local g=${d}/zce
+  echo "* writing code ${g}"
+  {
+    local - fs
+    : ${(A)fs::=${(Mk)functions:#(*zce*)}}
+    echo "#!zsh"
+    echo "# NOTE: Generated from zce.zsh ($0). Please DO NOT EDIT."; echo
+    local -a es; es=('zce-zcompile*')
+    echo "$(functions ${fs:#${~${(j.|.)es}}})"
+    echo "\nzce"
+  } >| ${g}
+
+  [[ -z ${ZCE_NOZCOMPILE-} ]] || return
+  autoload -U zrecompile && {
+    echo -n "* "; zrecompile -p -R ${g}
+  } && {
+    zmodload zsh/datetime
+    touch --date="$(strftime "%F %T" $((EPOCHSECONDS + 10)))" ${g}.zwc
+    [[ -z ${ZCE_ZCOMPILE_NOKEEP-} ]] || { echo "rm -f ${g} ${g}.zwc.*" | sh -x }
+    echo "** All done."
+    echo "** Please update your .zshrc to load the zcompiled file like this,"
+    cat <<EOT
+-- >8 --
+## zce.zsh stuff.
+# source ${s/$HOME/~}
+autoload -w ${g}; zle -N zce
+# bindkey "^Xz" zce
+-- 8< --
+EOT
+  }
+}
