@@ -199,9 +199,9 @@ with-zce () {
   ((CURSOR=$#BUFFER)); zle -R
   local -a region_highlight
   {
-    "$@" ${(j..)$(print {a-z} {A-Z})} || {
-      ((CURSOR=orig_cursor))
-    }
+    local keys=; zstyle -s ':zce:*' keys keys || \
+      keys=${(j..)$(print {a-z} {A-Z})}
+    "$@" "$keys" || { ((CURSOR=orig_cursor)) }
   } always {
     BUFFER="$orig_buffer"
     zle redisplay
