@@ -71,7 +71,7 @@ zcompile `zce.zsh` to `~/.zsh/zfunc/zce`:
 -- >8 --
 ## zce.zsh stuff.
 # source ~/c/experiment/zsh/zce.zsh/zce.zsh
-autaload -w ~/.zsh/zfunc/zce; zle -N zce
+autoload -w ~/.zsh/zfunc/zce; zle -N zce
 # bindkey "^Xz" zce
 -- 8< --
 ----
