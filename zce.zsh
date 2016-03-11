@@ -122,6 +122,12 @@ zce-move-cursor () {
 }
 
 zce-readc () {
+  if [[ "${3-}" == "t" ]] &&
+    {[[ -z "${POSTDISPLAY-}" ]] || [[ "${POSTDISPLAY-}" != *"\n"* ]]}; then
+    echoti cud1
+    echoti cuu1
+    zle reset-prompt
+  fi
   echoti sc
   echoti cud 1
   echoti hpa 0
@@ -211,7 +217,7 @@ with-zce () {
 zce-searchin-read () {
   local s=; zstyle -s ':zce:*' prompt-char s || \
     s='%{\e[1;32m%}Search for character:%{\e[0m%} '
-  zce-readc "$1" "$s"
+  zce-readc "$1" "$s" t
 }
 
 zce-raw () {
