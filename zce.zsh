@@ -130,12 +130,12 @@ zce-readc () {
   fi
   echoti sc
   echoti cud 1
-  echo -n '\x1b[1G'
+  echoti hpa 0 2>/dev/null || echo -n '\x1b[1G'
   echoti el
   print -Pn $2
   read -s -k 1 $1
   local ret=$?
-  echo -n '\x1b[1G'
+  echoti hpa 0 2>/dev/null || echo -n '\x1b[1G'
   echoti el
   echoti rc
   return $ret
