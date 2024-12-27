@@ -24,7 +24,7 @@ zce-genh-loop-key () {
 zce-genh-loop () {
   local   succ="$1"; shift
   local posstr="$1"; shift
-  local  qchar="$1"; shift
+  local   qpat="$1"; shift
   local buffer="$1"; shift
   local keyfun="$1"; shift
   local keystr="$1"; shift
@@ -37,16 +37,16 @@ zce-genh-loop () {
   if ((n == 0)); then
     local tmp=;
     ${keyfun} tmp ${keystr} ${kns[@]}
-    ${succ} ${qchar} $buffer ${tmp#	}${a:+"	"}${a} "$posstr"; return $?
+    ${succ} ${qpat} $buffer ${tmp#	}${a:+"	"}${a} "$posstr"; return $?
   elif [[ -z "$a" ]]; then
     ${keyfun} a ${keystr} ${kns[@]}
-    ${0} ${succ} ${posstr} ${qchar} ${buffer} ${keyfun} ${keystr} \
+    ${0} ${succ} ${posstr} ${qpat} ${buffer} ${keyfun} ${keystr} \
       ${n} ${m} $a; return $?
   else
     local k=${as[1]}; shift as
     local -i len; ((len=n<m?n:m))
     local -i sub=$((len-1)); ((n<=m)) && sub=n
-    ${0} ${succ} ${posstr} ${qchar} ${buffer} ${keyfun} ${keystr} \
+    ${0} ${succ} ${posstr} ${qpat} ${buffer} ${keyfun} ${keystr} \
       $((n - sub)) \
       $m \
       "${(j.	.)as}" \
@@ -57,7 +57,7 @@ zce-genh-loop () {
 
 zce-1 () {
   setopt localoptions no_ksharrays no_kshzerosubscript extendedglob
-  local c="$1"; shift
+  local q="$1"; shift
   local b="$1"; shift
   local kont="$1"; shift
   local keys="$1"; shift
@@ -65,30 +65,30 @@ zce-1 () {
   local -a match mbegin mend
   local null=$'\0' ok=$'\e\e ' okp=$'\e\e [[:digit:]]##(#e)'
 
-  ps=(${${(M)${(0)${(S)b//*(#b)(${c})/${ok}$mbegin[1]${null}}}:#${~okp}}#${ok}})
+  ps=(${${(M)${(0)${(S)b//*(#b)($~q)/${ok}$mbegin[1]${null}}}:#${~okp}}#${ok}})
   if (($#ps == 0)); then
     zce-fail; return -1
   elif (($#ps > $#keys)); then
-    zce-genh-loop "$kont" ${(j. .)ps} $c $b zce-genh-loop-key "$keys" \
+    zce-genh-loop "$kont" ${(j. .)ps} $q $b zce-genh-loop-key "$keys" \
       $(($#ps - $#keys + 1)) $#keys '' ' ' $#keys
   else
-    zce-genh-loop "$kont" ${(j. .)ps} $c $b zce-genh-loop-key "$keys" \
+    zce-genh-loop "$kont" ${(j. .)ps} $q $b zce-genh-loop-key "$keys" \
       0 $#keys '' ' ' $#ps
   fi
 }
 
 zce-2 () {
-  local c="$1"
+  local q="$1"
   local b="$2"
   local oks="$3"
   local ops="$4"
-  zce-2-raw "$c" "$b" "$oks" "$ops" \
+  zce-2-raw "$q" "$b" "$oks" "$ops" \
     zce-move-cursor zce-keyin-loop zce-keyin-read
 }
 
 zce-2-raw () {
   setopt localoptions extendedglob
-  local c="$1"; shift
+  local q="$1"; shift
   local b="$1"; shift
   local oks="$1"; local -a ks; : ${(A)ks::=${=1}}; shift
   local ops="$1"; local -a ps; : ${(A)ps::=${(Oa)${=1}}}; shift
@@ -106,7 +106,7 @@ zce-2-raw () {
   local -i n=1
   local null=$'\0'
   local MATCH MBEGIN MEND
-  ${keyinfun} '' "$b" "${b//(#m)${c}/${ks[i--][1]}}" \
+  ${keyinfun} '' "$b" "${b//(#m)${~q}/${ks[i--][1]}}" \
     "${movecfun}" "${keyinfun}" "${kreadfun}" \
     -- ${(s. .)${:-"${oks//(#m)$'\t'/$null$ps[((n++))] }$null$ps[n]"}}
 }
@@ -222,7 +222,7 @@ zce-searchin-read () {
 zce-raw () {
   local c=; "$1" c
   [[ "$c" == [[:print:]] ]] && {
-    zce-1 "$c" "$BUFFER" zce-2 "$2"
+    zce-1 "${(q)c}" "$BUFFER" zce-2 "$2"
   }
 }
 
