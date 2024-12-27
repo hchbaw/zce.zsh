@@ -61,7 +61,6 @@ zce-1 () {
   local b="$1"; shift
   local kont="$1"; shift
   local keys="$1"; shift
-  [[ "$c" == [[:print:]] ]] || return -1
   local -a ps
   local -a match mbegin mend
   local null=$'\0' ok=$'\e\e ' okp=$'\e\e [[:digit:]]##(#e)'
