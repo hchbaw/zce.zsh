@@ -39,6 +39,15 @@ Styles
 `:zce:* prompt-key`:: A prompt string for querying the target character. +
 (default: `'%{\e[1;32m%}Target key:%{\e[0m%} '`)
 
+`:zce:* search-case`:: 'ignorecase', 'smartcase' or empty('default'). The case of the searching character will or will not be ignored on this value. +
+Example (the searching character `a` or `A` for the command line buffer `aA` maches as below) : +
+[width="100%",options="header"]
+|============================================================
+|search / buffer     |'ignorecase'|'smartcase'|empty(or 'default')
+|search `a` for `aA` |`a`, `A`    |`a`, `A`   |`a`
+|search `A` for `aA` |`a`, `A`    |`A`        |`A`
+|============================================================
+
 customization example
 ~~~~~~~~~~~~~~~~~~~~~
 
@@ -52,6 +61,7 @@ zstyle ':zce:*' fg 'fg=white,bold'
 zstyle ':zce:*' bg 'fg=7'
 zstyle ':zce:*' prompt-char '%{\e[1;32m%}Character:%{\e[0m%} '
 zstyle ':zce:*' prompt-key '%{\e[1;32m%}Key:%{\e[0m%} '
+zstyle ':zce:*' search-case smartcase
 ----
 
 Notes

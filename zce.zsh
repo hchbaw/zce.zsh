@@ -222,8 +222,25 @@ zce-searchin-read () {
 zce-raw () {
   local c=; "$1" c
   [[ "$c" == [[:print:]] ]] && {
-    zce-1 "${(q)c}" "$BUFFER" zce-2 "$2"
+    zce-1-call "${c}" "$BUFFER" zce-2 "$2"
   }
+}
+
+zce-1-call () {
+  local c="$1"; shift
+  local b="$1"; shift
+  local kont="$1"; shift
+  local keys="$1"; shift
+  local s=; zstyle -s ':zce:*' search-case s || s=default
+  local q=
+  if [[ "$s" == ignorecase && "$c" == [[:lower:][:upper:]] ]]; then
+    q="[${(qL)c}${(qU)c}]" # neads 'q'? This is a safe bet, add 'q' here.
+  elif [[ "$s" == smartcase && "$c" == [[:lower:]] ]]; then
+    q="[${(q)c}${(qU)c}]"  # ditto
+  else
+    q="${(q)c}" # needs 'q' here for the special characters like '[', etc.
+  fi
+  zce-1 "$q" "$b" "$kont" "$keys"
 }
 
 zce () { with-zce zce-raw zce-searchin-read }
