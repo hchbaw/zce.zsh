@@ -234,11 +234,11 @@ zce-1-call () {
   local s=; zstyle -s ':zce:*' search-case s || s=default
   local q=
   if [[ "$s" == ignorecase && "$c" == [[:lower:][:upper:]] ]]; then
-    q="[${(qL)c}${(qU)c}]" # neads 'q'? This is a safe bet, add 'q' here.
+    q="[${(bL)c}${(bU)c}]" # neads 'b'? This is a safe bet, add 'b' here.
   elif [[ "$s" == smartcase && "$c" == [[:lower:]] ]]; then
-    q="[${(q)c}${(qU)c}]"  # ditto
+    q="[${(b)c}${(bU)c}]"  # ditto
   else
-    q="${(q)c}" # needs 'q' here for the special characters like '[', etc.
+    q="${(b)c}" # needs 'b' here for the special characters like '[', etc.
   fi
   zce-1 "$q" "$b" "$kont" "$keys"
 }
